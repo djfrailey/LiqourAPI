@@ -24,11 +24,12 @@ class RequestFactory
     {
         $request = new Request($uri);
         
-        $request->setMethod('POST');
+        $request->setMethod(Request::METHOD_POST);
 
         if (is_array($body)) {
             $body = http_build_query($body);
             $request->setHeader('Content-Type', 'application/x-www-form-urlencoded');
+            $request->setHeader('Content-Length', strlen($body));
         }
 
         $request->setContent($body);
@@ -39,14 +40,14 @@ class RequestFactory
     public function put(string $uri, $body) : Request
     {
         $request = $this->post($uri, $body);
-        $request->setMethod('PUT');
+        $request->setMethod(Request::METHOD_PUT);
         return $request;
     }
 
     public function delete(string $uri) : Request
     {
         $request = new Request($uri);
-        $request->setMethod('DELETE');
+        $request->setMethod(Request::METHOD_DELETE);
         return $request;
     }
 }
