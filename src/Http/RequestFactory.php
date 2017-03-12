@@ -16,7 +16,6 @@ class RequestFactory
         }
 
         $request = new Request($uri);
-        
         return $request;
     }
 
