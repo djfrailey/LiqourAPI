@@ -9,19 +9,23 @@ use \RuntimeException;
 
 class Request
 {
-    const HTTP_PROTOCOL_1_0 = 1.0;
-    const HTTP_PROTOCOL_1_1 = 1.1;
+    const HTTP_1_0 = 1.0;
+    const HTTP_1_1 = 1.1;
+    const METHOD_GET = "GET";
+    const METHOD_PUT = "PUT";
+    const METHOD_POST = "POST";
+    const METHOD_DELETE = "DELETE";
 
     private $url;
     private $headers;
-    private $followLocation = 0;
-    private $method = "GET";
+    private $followLocation = 1;
+    private $method = self::METHOD_GET;
     private $userAgent = "PHP/HTTP-Client";
     private $contentBody = "";
     private $proxyUri = "";
     private $requestFullUri = false;
     private $maxRedirects = 20;
-    private $protocolVersion = self::HTTP_PROTOCOL_1_1;
+    private $protocolVersion = self::HTTP_1_1;
     private $timeout = 30.0;
     private $ignoreErrors = false;
 
@@ -50,7 +54,7 @@ class Request
         return new Response($this->url, $contents, $meta);
     }
 
-    public function setProtocolVersion(float $version) : Client
+    public function setProtocolVersion(float $version) : Request
     {
         $this->protocolVersion = $version;
         return $this;
@@ -61,7 +65,7 @@ class Request
         return $this->protocolVersion;
     }
 
-    public function setMaxRedirects(int $max) : Client
+    public function setMaxRedirects(int $max) : Request
     {
         $this->maxRedirects = $max;
         return $this;
@@ -72,7 +76,7 @@ class Request
         return $this->maxRedirects;
     }
 
-    public function setRequestFullUri(bool $requestFullUri) : Client
+    public function setRequestFullUri(bool $requestFullUri) : Request
     {
         $this->requestFullUri = $requestFullUri;
         return $this;
@@ -83,7 +87,7 @@ class Request
         return $this->requestFullUri;
     }
 
-    public function setIgnoreErrors(bool $ignore) : Client
+    public function setIgnoreErrors(bool $ignore) : Request
     {
         $this->ignoreErrors = $ignore;
         return $this;
@@ -94,7 +98,7 @@ class Request
         return $this->ignoreErrors;
     }
 
-    public function setTimeout(float $timeout) : Client
+    public function setTimeout(float $timeout) : Request
     {
         $this->timeout = $timeout;
         return $this;
@@ -105,7 +109,7 @@ class Request
         return $this->timeout;
     }
 
-    public function setUrl(string $url) : Client
+    public function setUrl(string $url) : Request
     {
         $this->url = $url;
         return $this;
@@ -116,7 +120,7 @@ class Request
         return $this->url;
     }
 
-    public function setContentBody(string $content) : Client
+    public function setContentBody(string $content) : Request
     {
         $this->contentBody = $content;
         return $this;
@@ -127,7 +131,7 @@ class Request
         return $this->contentBody;
     }
 
-    public function setProxy(string $proxyUri) : Client
+    public function setProxy(string $proxyUri) : Request
     {
         $this->proxyUri = $proxyUri;
         return $this;
@@ -138,7 +142,7 @@ class Request
         return $this->proxyUri;
     }
 
-    public function setUserAgent(string $userAgent) : Client
+    public function setUserAgent(string $userAgent) : Request
     {
         $this->userAgent = $userAgent;
         return $this;
@@ -149,7 +153,7 @@ class Request
         return $this->userAgent;
     }
 
-    public function setFollowLocation(bool $follow = false) : Client
+    public function setFollowLocation(bool $follow = false) : Request
     {
         $this->followLocation = (int) $follow;
         return $this;
@@ -160,7 +164,7 @@ class Request
         return $this->followLocation;
     }
 
-    public function setMethod(string $method) : Client
+    public function setMethod(string $method) : Request
     {
         $this->method = $method;
         return $this;
@@ -171,13 +175,13 @@ class Request
         return $this->method;
     }
 
-    public function setHeaders(array $headers) : Client
+    public function setHeaders(array $headers) : Request
     {
         $this->headers->fill($headers);
         return $this;
     }
 
-    public function setHeader(string $header, string $value) : Client
+    public function setHeader(string $header, string $value) : Request
     {
         $this->headers->set($header, $value);
         return $this;
@@ -201,7 +205,7 @@ class Request
             'method' => $this->method,
             'header' => $formattedHeaders,
             'user_agent' => $this->userAgent,
-            'content' => $this->content,
+            'content' => $this->contentBody,
             'proxy' => $this->proxyUri,
             'request_fulluri' => $this->requestFullUri,
             'follow_location' => $this->followLocation,
