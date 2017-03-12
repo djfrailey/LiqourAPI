@@ -7,7 +7,7 @@ use \Generator;
 
 class Bag
 {
-    private $data;
+    private $data = [];
 
     public function set(string $key, $value) : Bag
     {
@@ -40,7 +40,9 @@ class Bag
 
     public function toGenerator() : Generator
     {
-        yield from $this->all();
+        foreach($this->data as $key => $value) {
+            yield [$key => $value];
+        }
     }
 
     public function has(string $key)
