@@ -9,24 +9,74 @@ use David\Bag\Bag;
 class Response
 {
     private $headers;
-    private $requestedUri;
+    private $uri;
     private $contentBody;
     private $statusCode;
     private $protocolVersion;
     private $charset;
     private $contentType;
 
-    public function __construct(string $requestedUri, string $contentBody, array $responseMeta)
+    public function __construct(string $uri, $contentBody, int $statusCode, float $protocolVersion, string $charset, string $contentType, array $headers)
     {
-        $this->headers = new Bag();
-        $this->requestedUri = $requestedUri;
-        $this->parseResponseMeta($responseMeta);
-        $this->parseContentBody($contentBody);
+        $this->uri = $uri;
+        $this->contentBody = $contentBody;
+        $this->statusCode = $statusCode;
+        $this->protocolVersion = $protocolVersion;
+        $this->charset = $charset;
+        $this->contentType = $contentType;
+        $this->headers = new Bag($headers);
+    }
+
+    public function setUri(string $uri) : Response
+    {
+        $this->uri = $uri;
+        return $this;
+    }
+
+    public function setContentBody($contentBody) : Response
+    {
+        $this->contentBody = $contentBody;
+        return $this;
+    }
+
+    public function setStatusCode(int $statusCode) : Response
+    {
+        $this->statusCode = $statusCode;
+        return $this;
+    }
+
+    public function setProtocolVersion(float $protocolVersion) : Response
+    {
+        $this->protocolVersion = $protocolVersion;
+        return $this;
+    }
+
+    public function setCharset(string $charset) : Response
+    {
+        $this->charset = $charset;
+        return $this;
+    }
+
+    public function setContentType(string $contentType) : Response
+    {
+        $this->contentType = $contentType;
+        return $this;
+    }
+
+    public function setHeaders(array $headers) : Response
+    {
+        $this->headers = new Bag($headers);
+        return $this;
     }
 
     public function getContentBody()
     {
         return $this->contentBody;
+    }
+
+    public function getContentType()
+    {
+        return $this->contentType;
     }
 
     public function getUri() : string
@@ -52,72 +102,5 @@ class Response
     public function isJson() : bool
     {
         return $this->contentType === 'application/json';
-    }
-
-    private function parseResponseMeta(array $responseMeta)
-    {
-        if (isset($responseMeta['wrapper_data']) === true) {
-            $wrapperData = $responseMeta['wrapper_data'];
-            
-            $protocolAndCode = array_shift($wrapperData);
-            $this->parseProtocolAndCode($protocolAndCode);
-            $this->parseHeaders($wrapperData);
-            $this->parseContentType();
-        }
-    }
-
-    private function parseContentBody(string $contentBody)
-    {
-        if ($this->isJson()) {
-            $contentBody = json_decode($contentBody);
-
-            if ($contentBody === false) {
-                $jsonError = json_last_error_msg();
-                throw new RuntimeException("JSON Parse Error: $jsonError");
-            }
-        }
-
-        $this->contentBody = $contentBody;
-    }
-
-    private function parseProtocolAndCode(string $protocolAndCode)
-    {
-        $protoclAndCode = preg_quote($protocolAndCode, '/');
-        preg_match('/^HTTP\/(\d\.\d)\ ([\d]{1,3})/', $protocolAndCode, $protocolAndCodeMatch);
-
-        if ($protocolAndCodeMatch) {
-            list(, $protocol, $statusCode) = $protocolAndCodeMatch;
-            $this->protocolVersion = floatval($protocol);
-            $this->statusCode = intval($statusCode);
-        }
-    }
-
-    private function parseHeaders(array $headers)
-    {
-        foreach($headers as $rawHeader) {
-            $firstColon = strpos($rawHeader, ':');
-            $header = substr($rawHeader, 0, $firstColon);
-            $value = substr($rawHeader, $firstColon + 1);
-
-            $header = trim($header);
-            $value = trim($value);
-            
-            $this->headers->set($header, $value);
-        }
-    }
-
-    private function parseContentType()
-    {
-        $contentType = $this->headers->get('Content-Type');
-
-        if ($contentType) {
-            list($contentType, $charsetString) = explode(' ', $contentType);
-            list(,$charset) = explode('=', $charsetString);
-
-            $contentType = rtrim($contentType, ';');
-
-            $this->contentType = $contentType;
-            $this->charset = $charset;
-        }
     }
 }
