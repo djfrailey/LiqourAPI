@@ -18,8 +18,9 @@ class Request
     private $headers;
     private $method = self::METHOD_GET;
     private $contentBody = "";
+    private $params = [];
 
-    public function __construct(string $url = null)
+    public function __construct(string $url = "")
     {
         $this->setUrl($url);
         $this->headers = new Bag();
@@ -34,6 +35,18 @@ class Request
     public function getUrl() : string
     {
         return $this->url;
+    }
+
+    public function getUrlWithQuery() : string
+    {
+        $query = http_build_query($this->params);
+        $url = $this->url;
+
+        if ($query) {
+            $url .= "?$query";
+        }
+
+        return $url;
     }
 
     public function setContentBody(string $content) : Request
@@ -78,5 +91,16 @@ class Request
     public function getHeader(string $header)
     {
         return $this->headers->get($header);
+    }
+
+    public function getQueryParams() : array
+    {
+        return $this->params;
+    }
+
+    public function setQueryParams(array $params) : Request
+    {
+        $this->params = $params;
+        return $this;
     }
 }
