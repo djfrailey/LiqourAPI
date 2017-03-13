@@ -2,6 +2,11 @@
 
 namespace David\Liqour;
 
+use David\Bag\Bag;
+
+use \stdClass;
+use \DateTime;
+
 class ResourceFactory
 {
     private $api;
@@ -85,7 +90,7 @@ class ResourceFactory
         $createdAt = new DateTime($product->created_at);
         $modifiedAt = new DateTime($product->modified_at);
 
-        $product = new Product(
+        $productDTO = new Product(
             $product->id,
             $product->title,
             $product->age,
@@ -102,8 +107,8 @@ class ResourceFactory
         );
 
         $prices = $this->api->getPrices(['product' => $product->id]);
-        $product->setPrices($prices);
+        $productDTO->setPrices($prices);
         
-        return $product;
+        return $productDTO;
     }
 }
