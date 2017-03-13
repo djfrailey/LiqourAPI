@@ -13,6 +13,7 @@ class RequestFactory
         if ($params) {
             $queryParamString = http_build_query($params);
             $queryString = "?$queryParamString";
+            $uri .= $queryString;
         }
 
         $request = new Request($uri);
