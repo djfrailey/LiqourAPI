@@ -103,11 +103,9 @@ class ResourceFactory
             $product->slug,
             $createdAt,
             $modifiedAt,
-            $product->resource_uri
+            $product->resource_uri,
+            $this->api
         );
-
-        $prices = $this->api->getPrices(['product' => $product->id]);
-        $productDTO->setPrices($prices);
         
         return $productDTO;
     }
