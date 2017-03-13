@@ -7,7 +7,12 @@ use \Generator;
 
 class Bag
 {
-    private $data = [];
+    private $data;
+
+    public function __construct(array $data = [])
+    {
+        $this->data = $data;
+    }
 
     public function set(string $key, $value) : Bag
     {
