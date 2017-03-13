@@ -50,13 +50,18 @@ class Bag
         }
     }
 
-    public function has(string $key)
+    public function has(string $key) : bool
     {
         return isset($this->data[$key]);
     }
 
-    public function all()
+    public function all() : array
     {
         return $this->data;
+    }
+
+    public function count() : int
+    {
+        return count($this->data);
     }
 }
