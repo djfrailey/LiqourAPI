@@ -2,6 +2,8 @@
 
 namespace David\Http;
 
+use \RuntimeException;
+
 class Client
 {
     const HTTP_1_0 = 1.0;
@@ -104,28 +106,40 @@ class Client
         return $this->protocolVersion;
     }
 
+    public function get(string $endpoint, array $params = []) : Response
+    {
+        $request = new Request();
+        $request->setUrl($endpoint)
+        ->setQueryParams($params);
+
+        return $this->send($request);
+    }
+
     public function send(Request $request) : Response
     {
+        $url = $request->getUrlWithQuery();
         $context = $this->createStreamContext($request);
-        $handle = @fopen($this->url, 'r', false, $context);
+        $handle = @fopen($url, 'r', false, $context);
 
         if ($handle === false) {
-            throw new RuntimeException("Something bad happened while trying to request $this->url");
+            throw new RuntimeException("Something bad happened while trying to request $url");
         }
 
         $meta = stream_get_meta_data($handle);
         $contents = stream_get_contents($handle);
+        
+        @fclose($handle);
 
         if ($contents === false) {
-            throw new RuntimeException("Something bad happened while reading request stream ($this->url)");
+            throw new RuntimeException("Something bad happened while reading request stream ($url)");
         }
 
-        return $this->createResponse($meta, $contents);
+        return $this->createResponse($url, $meta, $contents);
     }
 
     private function createStreamContext(Request $request)
     {
-        $formattedHeaders = $this->getFormattedHeaders($request);
+        $formattedHeaders = $this->formatRequestHeaders($request);
 
         $http = [
             'method' => $request->getMethod(),
@@ -146,10 +160,10 @@ class Client
         return stream_context_create($options);
     }
 
-    private function getFormattedHeaders(Request $request) : array
+    private function formatRequestHeaders(Request $request) : array
     {
         $formattedHeaders = [];
-        $headers = $request->headers->toGenerator();
+        $headers = $request->getHeaders()->toGenerator();
 
         foreach($headers as $header => $value) {
             if (is_numeric($header)) {
@@ -162,22 +176,61 @@ class Client
         return $formattedHeaders;
     }
 
-    private function parseResponseMeta(array $responseMeta)
+    private function createResponse(string $url, array $meta, string $contentBody) : Response
     {
-        if (isset($responseMeta['wrapper_data']) === true) {
-            $wrapperData = $responseMeta['wrapper_data'];
-            
-            $protocolAndCode = array_shift($wrapperData);
-            
-            $this->parseProtocolAndCode($protocolAndCode);
-            $this->parseHeaders($wrapperData);
-            $this->parseContentType();
-        }
+        $parsedResponseMeta = $this->parseResponseMeta($meta);
+        $parsedContentBody = $this->parseContentBody($contentBody, $parsedResponseMeta['contentType']);
+
+        $response = new Response(
+            $url,
+            $parsedContentBody,
+            $parsedResponseMeta['code'],
+            $parsedResponseMeta['protocol'],
+            $parsedResponseMeta['charset'],
+            $parsedResponseMeta['contentType'],
+            $parsedResponseMeta['headers']
+        );
+
+        return $response;
     }
 
-    private function parseContentBody(string $contentBody)
+    private function parseResponseMeta(array $responseMeta)
     {
-        if ($this->isJson()) {
+        $parsedResponseMeta = [
+            'headers' => [],
+            'protocol' => 0,
+            'code' => 0,
+            'contentType' => "",
+            'charset' => ""
+        ];
+
+        if (isset($responseMeta['wrapper_data']) === true) {
+            $wrapperData = $responseMeta['wrapper_data'];
+            $protocolAndCode = array_shift($wrapperData);
+            
+            $headers = $this->parseHeaders($wrapperData);
+            $rawContentType = "";
+
+            if (isset($headers['Content-Type']) === true) {
+                $rawContentType = $headers['Content-Type'];
+            }
+
+            list($protocol, $code) = $this->parseProtocolAndCode($protocolAndCode);
+            list($contentType, $charset) = $this->parseContentType($rawContentType);
+            
+            $parsedResponseMeta['headers'] = $headers;
+            $parsedResponseMeta['protocol'] = $protocol;
+            $parsedResponseMeta['code'] = $code;
+            $parsedResponseMeta['contentType'] = $contentType;
+            $parsedResponseMeta['charset'] = $charset;
+        }
+
+        return $parsedResponseMeta;
+    }
+
+    private function parseContentBody(string $contentBody, string $contentType)
+    {
+        if ($contentType === 'application/json') {
             $contentBody = json_decode($contentBody);
 
             if ($contentBody === false) {
@@ -186,23 +239,30 @@ class Client
             }
         }
 
-        $this->contentBody = $contentBody;
+        return $contentBody;
     }
 
-    private function parseProtocolAndCode(string $protocolAndCode)
+    private function parseProtocolAndCode(string $protocolAndCode) : array
     {
-        $protoclAndCode = preg_quote($protocolAndCode, '/');
+        $protocol = 0;
+        $statusCode = 0;
+
+        $protocolAndCode = preg_quote($protocolAndCode, '/');
         preg_match('/^HTTP\/(\d\.\d)\ ([\d]{1,3})/', $protocolAndCode, $protocolAndCodeMatch);
 
         if ($protocolAndCodeMatch) {
             list(, $protocol, $statusCode) = $protocolAndCodeMatch;
-            $this->protocolVersion = floatval($protocol);
-            $this->statusCode = intval($statusCode);
+            $protocol = floatval($protocol);
+            $statusCode = intval($statusCode);
         }
+
+        return [$protocol, $statusCode];
     }
 
-    private function parseHeaders(array $headers)
+    private function parseHeaders(array $headers) : array
     {
+        $parsedHeaders = [];
+
         foreach($headers as $rawHeader) {
             $firstColon = strpos($rawHeader, ':');
             $header = substr($rawHeader, 0, $firstColon);
@@ -211,33 +271,29 @@ class Client
             $header = trim($header);
             $value = trim($value);
             
-            $this->headers->set($header, $value);
+            $parsedHeaders[$header] = $value;
         }
+
+        return $parsedHeaders;
     }
 
-    private function parseContentType()
+    private function parseContentType(string $rawContentType) : array
     {
-        $contentType = $this->headers->get('Content-Type');
+        $contentType = "";
+        $encoding = "";
 
-        if ($contentType) {
-            $contentTypeSplit = explode(' ', $contentType);
+        $contentTypeSplit = explode(' ', $rawContentType);
 
-            if (isset($contentTypeSplit[0]) === true) {
-                $contentType = $contentTypeSplit[0];
-                $contentType = rtrim($contentType, ';');
-                $this->contentType = $contentType;
-            }
-
-            if (isset($contentTypeSplit[1]) === true) {
-                $charsetString = $contentTypeSplit[1];
-                list(,$charset) = explode('=', $charsetString);
-                $this->charset = $charset;
-            }
+        if (isset($contentTypeSplit[0]) === true) {
+            $contentType = $contentTypeSplit[0];
+            $contentType = rtrim($contentType, ';');
         }
-    }
 
-    private function createResponse(array $meta, string $data) : Response
-    {
+        if (isset($contentTypeSplit[1]) === true) {
+            $charsetString = $contentTypeSplit[1];
+            list(,$charset) = explode('=', $charsetString);
+        }
 
+        return [$contentType, $encoding];
     }
 }
