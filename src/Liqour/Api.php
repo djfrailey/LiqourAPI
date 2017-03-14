@@ -67,7 +67,7 @@ class Api
      */
     public function getPrice(int $priceId) : Price
     {
-        $response = $this->request("price/$priceId", $params);
+        $response = $this->request("price/$priceId");
         $contentBody = $response->getContentBody();
         return $this->resourceFactory->createPrice($contentBody);
     }
