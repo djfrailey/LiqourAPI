@@ -5,6 +5,9 @@ namespace David\Liqour;
 use David\Bag\Bag;
 use \DateTime;
 
+/**
+ * Represents a Product resource
+ */
 class Product implements ResourceInterface
 {
     private $id;
@@ -122,6 +125,10 @@ class Product implements ResourceInterface
         return $this->uri;
     }
 
+    /**
+     * Retreives the prices for this product
+     * @return Bag
+     */
     public function getPrices() : Bag
     {
         return $this->api->getPrices(['product' => $this->id]);

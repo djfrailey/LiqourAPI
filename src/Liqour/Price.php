@@ -4,6 +4,9 @@ namespace David\Liqour;
 
 use \DateTime;
 
+/**
+ * Represents a Price resource
+ */
 class Price implements ResourceInterface
 {
     private $id;

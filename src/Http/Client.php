@@ -4,18 +4,61 @@ namespace David\Http;
 
 use \RuntimeException;
 
+/**
+ * A naive HTTP Client.
+ */
 class Client
 {
     const HTTP_1_0 = 1.0;
     const HTTP_1_1 = 1.1;
 
-    private $followLocation = 1;
+    /**
+     * Follow Location headers.
+     * @var integer
+     */
+    private $followLocation = 0;
+
+    /**
+     * User Agent string to send with the request.
+     * @var string
+     */
     private $userAgent = "PHP/HTTP-Client";
+
+    /**
+     * Address of a proxy to make the request through.
+     * @var string
+     */
     private $proxyUri = "";
+
+    /**
+     * Indicates that the entire uri should be used when
+     * sending the request. Some proxies may require it.
+     * @var boolean
+     */
     private $requestFullUri = false;
+
+    /**
+     * The number of redirects to follow.
+     * @var integer
+     */
     private $maxRedirects = 20;
+
+    /**
+     * The HTTP Version to send with a request.
+     * @var float
+     */
     private $protocolVersion = self::HTTP_1_1;
+
+    /**
+     * The amount of time in seconds to wait for a response to the request.
+     * @var float
+     */
     private $timeout = 30.0;
+
+    /**
+     * Ignores internal errors thrown by PHP when making requests.
+     * @var boolean
+     */
     private $ignoreErrors = false;
 
     public function setProxy(string $proxyUri) : Request
@@ -106,6 +149,12 @@ class Client
         return $this->protocolVersion;
     }
 
+    /**
+     * Convenience method to create and send a GET Request
+     * @param  string $endpoint URL to request.
+     * @param  array  $params   Parameters to pass as GET params
+     * @return Response
+     */
     public function get(string $endpoint, array $params = []) : Response
     {
         $request = new Request();
@@ -115,6 +164,13 @@ class Client
         return $this->send($request);
     }
 
+    /**
+     * Sends an HTTP request through the client.
+     * @param  Request $request
+     * @throws  RutimeException if the requested URL cannot be opened.
+     * @throws  RuntimeException if the open stream cannot be flushed.
+     * @return Response
+     */
     public function send(Request $request) : Response
     {
         $url = $request->getUrlWithQuery();
@@ -137,6 +193,11 @@ class Client
         return $this->createResponse($url, $meta, $contents);
     }
 
+    /**
+     * Generates a stream context to be used with the next request.
+     * @param  Request $request
+     * @return resource
+     */
     private function createStreamContext(Request $request)
     {
         $formattedHeaders = $this->formatRequestHeaders($request);
@@ -160,6 +221,11 @@ class Client
         return stream_context_create($options);
     }
 
+    /**
+     * Formats the request headers to be sent by the client.
+     * @param  Request $request
+     * @return array
+     */
     private function formatRequestHeaders(Request $request) : array
     {
         $formattedHeaders = [];
@@ -176,6 +242,13 @@ class Client
         return $formattedHeaders;
     }
 
+    /**
+     * Creates a response from a given request.
+     * @param  string $url
+     * @param  array  $meta
+     * @param  string $contentBody
+     * @return Response
+     */
     private function createResponse(string $url, array $meta, string $contentBody) : Response
     {
         $parsedResponseMeta = $this->parseResponseMeta($meta);
@@ -194,7 +267,12 @@ class Client
         return $response;
     }
 
-    private function parseResponseMeta(array $responseMeta)
+    /**
+     * Parses the request streams meta data into useable data.
+     * @param  array  $responseMeta
+     * @return array
+     */
+    private function parseResponseMeta(array $responseMeta) : array
     {
         $parsedResponseMeta = [
             'headers' => [],
@@ -228,6 +306,13 @@ class Client
         return $parsedResponseMeta;
     }
 
+    /**
+     * JSON Decodes the content body if the content type is application/json
+     * 
+     * @param  string $contentBody
+     * @param  string $contentType
+     * @return mixed
+     */
     private function parseContentBody(string $contentBody, string $contentType)
     {
         if ($contentType === 'application/json') {
@@ -242,6 +327,15 @@ class Client
         return $contentBody;
     }
 
+    /**
+     * Parses the HTTP Protocol and Status Code of a raw response.
+     *
+     * The first index of the tuple will be the parsed protocol or 0.
+     * The second index of the tuple will be the parsed status code or 0.
+     * 
+     * @param  string $protocolAndCode 
+     * @return array
+     */
     private function parseProtocolAndCode(string $protocolAndCode) : array
     {
         $protocol = 0;
@@ -259,6 +353,11 @@ class Client
         return [$protocol, $statusCode];
     }
 
+    /**
+     * Parses an array of raw headers into something more friendly.
+     * @param  array  $headers
+     * @return array
+     */
     private function parseHeaders(array $headers) : array
     {
         $parsedHeaders = [];
@@ -277,6 +376,15 @@ class Client
         return $parsedHeaders;
     }
 
+    /**
+     * Parses the content type and character set from a raw content type header.
+     *
+     * The first index in the tuple will be the parsed content type or empty string.
+     * The second index in the tuple will be the parsed character set or empty string.
+     * 
+     * @param  string $rawContentType
+     * @return array
+     */
     private function parseContentType(string $rawContentType) : array
     {
         $contentType = "";

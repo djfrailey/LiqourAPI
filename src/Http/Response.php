@@ -6,17 +6,72 @@ namespace David\Http;
 
 use David\Bag\Bag;
 
+/**
+ * A class to represent an HTTP response.
+ */
 class Response
 {
+    /**
+     * Response headers
+     * @var Bag
+     */
     private $headers;
+
+    /**
+     * Requested URI that generated the response.
+     * @var string
+     */
     private $uri;
+
+    /**
+     * Content body of the response.
+     * @var mixed
+     */
     private $contentBody;
+
+    /**
+     * Response status code sent by the server.
+     * @var int
+     */
     private $statusCode;
+
+    /**
+     * HTTP Protocol version returned by the server.
+     * @var float
+     */
     private $protocolVersion;
+
+    /**
+     * Response character set.
+     * @var string
+     */
     private $charset;
+
+    /**
+     * Response content type.
+     * @var string
+     */
     private $contentType;
 
-    public function __construct(string $uri, $contentBody, int $statusCode, float $protocolVersion, string $charset, string $contentType, array $headers)
+    /**
+     * Object constructor
+     * @param string $uri             URI that generated the response.
+     * @param string|array $contentBody Raw content body as a string, or a json decoded string.
+     * @param int    $statusCode
+     * @param float  $protocolVersion
+     * @param string $charset
+     * @param string $contentType
+     * @param array  $headers
+     */
+    public function __construct(
+        string $uri,
+        $contentBody,
+        int $statusCode,
+        float $protocolVersion,
+        string $charset,
+        string $contentType,
+        array $headers
+    )
     {
         $this->uri = $uri;
         $this->contentBody = $contentBody;

@@ -7,6 +7,9 @@ namespace David\Http;
 use David\Bag\Bag;
 use \RuntimeException;
 
+/**
+ * A class to represent an HTTP Request
+ */
 class Request
 {
     const METHOD_GET = "GET";
@@ -14,10 +17,34 @@ class Request
     const METHOD_POST = "POST";
     const METHOD_DELETE = "DELETE";
 
+    /**
+     * Request URL
+     * @var string
+     */
     private $url;
+
+    /**
+     * Request Headers
+     * @var Bag
+     */
     private $headers;
+
+    /**
+     * Request method. One of METHO_* constants.
+     * @var string
+     */
     private $method = self::METHOD_GET;
+
+    /**
+     * Content body to be sent with POST and PUT requests.
+     * @var string
+     */
     private $contentBody = "";
+
+    /**
+     * Query parameters to be sent with GET requests.
+     * @var array
+     */
     private $params = [];
 
     public function __construct(string $url = "")

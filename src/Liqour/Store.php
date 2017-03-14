@@ -3,6 +3,9 @@
 namespace David\Liqour;
 use \DateTime;
 
+/**
+ * Represents a store resource.
+ */
 class Store implements ResourceInterface
 {
     private $id;

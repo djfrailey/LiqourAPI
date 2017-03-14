@@ -9,10 +9,30 @@ use David\Bag\Bag;
 use \stdClass;
 use \DateTime;
 
+/**
+ * Class representation of the Oregon Liquor Prices API.
+ *
+ * http://www.oregonliquorprices.com
+ */
 class Api
 {
+
+    /**
+     * The base endpoint for the API.
+     * @var string
+     */
     private $endpoint = "http://www.oregonliquorprices.com/api/v1";
+
+    /**
+     * Factory to create resources from responses.
+     * @var ResourceFactory
+     */
     private $resourceFactory;
+
+    /**
+     * The HTTP client to use for API requests.
+     * @var Client
+     */
     private $client;
 
     public function __construct(Client $client)
@@ -21,6 +41,17 @@ class Api
         $this->resourceFactory = new ResourceFactory($this);
     }
 
+    /**
+     * Get a bag full of prices.
+     *
+     * Valid parameters include:
+     *     length - Number of results to return in a request
+     *     offset - Number of records to skip
+     *     product - ID of the product to retrieve prices for
+     * 
+     * @param  array  $params Get parameters to pass with the request.
+     * @return Bag
+     */
     public function getPrices(array $params = []) : Bag
     {
         $response = $this->request("price", $params);
@@ -28,25 +59,60 @@ class Api
         return $this->resourceFactory->createPriceBag($contentBody->objects);
     }
 
-    public function getPrice(int $priceId, array $params = []) : Price
+    /**
+     * Get a price by ID.
+     * 
+     * @param  int    $priceId
+     * @return Price
+     */
+    public function getPrice(int $priceId) : Price
     {
         $response = $this->request("price/$priceId", $params);
         $contentBody = $response->getContentBody();
         return $this->resourceFactory->createPrice($contentBody);
     }
 
+    /**
+     * Get a bag full of products.
+     *
+     * Valid parameters include:
+     *
+     *     length - Number of results to return in a request
+     *     offset - Number of records to skip
+     *     size - Filters products by bottle size.
+     *     proof - Filters products by proof.
+     *     on_sale - Filters products by sale status.
+     *     
+     * @param  array  $params
+     * @return Bag
+     */
     public function getProducts(array $params = []) : Bag
     {
         return $this->request("product", $params);
     }
 
-    public function getProduct(int $productId, array $params = []) : Product
+    /**
+     * Get product by ID.
+     * @param  int    $productId 
+     * @return Product
+     */
+    public function getProduct(int $productId) : Product
     {
         $response = $this->request("product/$productId", $params);
         $contentBody = $response->getContentBody();
         return $this->resourceFactory->createProduct($contentBody);
     }
 
+    /**
+     * Get a bag of Stores.
+     *
+     * Valid parameters include:
+     *     length - Number of results to return in a request
+     *     offset - Number of records to skip    
+     * 
+     * @param  array  $params
+     * @return Bag
+     */
     public function getStores(array $params = []) : Bag
     {
         $response = $this->request("store", $params);
@@ -54,13 +120,27 @@ class Api
         return $this->resourceFactory->createStoreBag($contentBody->objects);
     }
 
-    public function getStore(int $storeId, array $params = []) : Store
+    /**
+     * Get a store by ID
+     * 
+     * @param  int    $storeId
+     * @param  array  $params 
+     * @return Store
+     */
+    public function getStore(int $storeId) : Store
     {
         $response = $this->request("store/$storeId", $params);
         $contentBody = $response->getContentBody();
         return $this->resourceFactory->createStore($contentBody);
     }
 
+    /**
+     * Internal method used to pipe requests to the http client.
+     * 
+     * @param  string $endpoint
+     * @param  array  $params
+     * @return Response
+     */
     private function request(string $endpoint, array $params = []) : Response
     {
         $defaults = [

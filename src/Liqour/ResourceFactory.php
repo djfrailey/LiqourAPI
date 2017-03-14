@@ -7,6 +7,9 @@ use David\Bag\Bag;
 use \stdClass;
 use \DateTime;
 
+/**
+ * Factory to turn API responses into their object representations.
+ */
 class ResourceFactory
 {
     private $api;
