@@ -129,7 +129,7 @@ class Response
         return $this->contentBody;
     }
 
-    public function getContentType()
+    public function getContentType() : String
     {
         return $this->contentType;
     }
