@@ -39,6 +39,8 @@ class Api
     {
         $this->client = $client;
         $this->resourceFactory = new ResourceFactory($this);
+
+        $this->client->setFollowLocation(1);
     }
 
     /**
@@ -100,7 +102,7 @@ class Api
      */
     public function getProduct(int $productId) : Product
     {
-        $response = $this->request("product/$productId", $params);
+        $response = $this->request("product/$productId");
         $contentBody = $response->getContentBody();
         return $this->resourceFactory->createProduct($contentBody);
     }
