@@ -146,10 +146,10 @@ class Api
     private function request(string $endpoint, array $params = []) : Response
     {
         $defaults = [
-            'format' => 'json',
             'limit' => 20
         ];
 
+        $params['format'] = 'json';
         $params = array_merge($defaults, $params);
 
         $endpoint = "$this->endpoint/$endpoint";
