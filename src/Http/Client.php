@@ -61,7 +61,7 @@ class Client
      */
     private $ignoreErrors = false;
 
-    public function setProxy(string $proxyUri) : Request
+    public function setProxy(string $proxyUri) : Client
     {
         $this->proxyUri = $proxyUri;
         return $this;
@@ -72,7 +72,7 @@ class Client
         return $this->proxyUri;
     }
 
-    public function setUserAgent(string $userAgent) : Request
+    public function setUserAgent(string $userAgent) : Client
     {
         $this->userAgent = $userAgent;
         return $this;
@@ -83,7 +83,7 @@ class Client
         return $this->userAgent;
     }
 
-    public function setFollowLocation(bool $follow = false) : Request
+    public function setFollowLocation(bool $follow = false) : Client
     {
         $this->followLocation = (int) $follow;
         return $this;
@@ -94,13 +94,13 @@ class Client
         return $this->followLocation;
     }
 
-    public function setProtocolVersion(float $version) : Request
+    public function setProtocolVersion(float $version) : Client
     {
         $this->protocolVersion = $version;
         return $this;
     }
 
-    public function setMaxRedirects(int $max) : Request
+    public function setMaxRedirects(int $max) : Client
     {
         $this->maxRedirects = $max;
         return $this;
@@ -111,7 +111,7 @@ class Client
         return $this->maxRedirects;
     }
 
-    public function setRequestFullUri(bool $requestFullUri) : Request
+    public function setRequestFullUri(bool $requestFullUri) : Client
     {
         $this->requestFullUri = $requestFullUri;
         return $this;
@@ -122,7 +122,7 @@ class Client
         return $this->requestFullUri;
     }
 
-    public function setIgnoreErrors(bool $ignore) : Request
+    public function setIgnoreErrors(bool $ignore) : Client
     {
         $this->ignoreErrors = $ignore;
         return $this;
@@ -133,7 +133,7 @@ class Client
         return $this->ignoreErrors;
     }
 
-    public function setTimeout(float $timeout) : Request
+    public function setTimeout(float $timeout) : Client
     {
         $this->timeout = $timeout;
         return $this;
