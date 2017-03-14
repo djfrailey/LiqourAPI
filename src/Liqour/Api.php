@@ -88,7 +88,9 @@ class Api
      */
     public function getProducts(array $params = []) : Bag
     {
-        return $this->request("product", $params);
+        $response = $this->request("product", $params);
+        $contentBody = $response->getContentBody();
+        return $this->resourceFactory->createPriceBag($contentBody);
     }
 
     /**
