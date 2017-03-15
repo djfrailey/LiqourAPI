@@ -9,6 +9,7 @@ use David\Bag\Bag;
 use \stdClass;
 use \DateTime;
 use \InvalidArgumentException;
+use \RuntimeException;
 
 /**
  * Class representation of the Oregon Liquor Prices API.
@@ -40,14 +41,13 @@ class Api
     {
         $this->client = $client;
         $this->resourceFactory = new ResourceFactory();
-        $this->client->setFollowLocation(1);
     }
 
     /**
      * Get a bag full of prices.
      *
      * Valid parameters include:
-     *     length - Number of results to return in a request
+     *     limit - Number of results to return in a request
      *     offset - Number of records to skip
      *     product - ID of the product to retrieve prices for
      * 
@@ -58,7 +58,10 @@ class Api
     {
         $response = $this->request("price", $params);
         $contentBody = $response->getContentBody();
-        return $this->resourceFactory->createPriceBag($contentBody->objects);
+
+        $objects = $contentBody->objects ?? [];
+
+        return $this->resourceFactory->createPriceBag($objects);
     }
 
     /**
@@ -79,7 +82,7 @@ class Api
      *
      * Valid parameters include:
      *
-     *     length - Number of results to return in a request
+     *     limit - Number of results to return in a request
      *     offset - Number of records to skip
      *     size - Filters products by bottle size.
      *     proof - Filters products by proof.
@@ -92,7 +95,10 @@ class Api
     {
         $response = $this->request("product", $params);
         $contentBody = $response->getContentBody();
-        return $this->resourceFactory->createPriceBag($contentBody);
+
+        $objects = $contentBody->objects ?? [];
+
+        return $this->resourceFactory->createProductBag($objects);
     }
 
     /**
@@ -109,7 +115,7 @@ class Api
 
     public function getProductPrices($productOrId) : Bag
     {
-        $isInteger = is_integer($productId);
+        $isInteger = is_integer($productOrId);
         $isProduct = $productOrId instanceof Product;
 
         if ($isInteger === false && $isProduct === false) {
@@ -129,7 +135,7 @@ class Api
      * Get a bag of Stores.
      *
      * Valid parameters include:
-     *     length - Number of results to return in a request
+     *     limit - Number of results to return in a request
      *     offset - Number of records to skip    
      * 
      * @param  array  $params
@@ -139,7 +145,10 @@ class Api
     {
         $response = $this->request("store", $params);
         $contentBody = $response->getContentBody();
-        return $this->resourceFactory->createStoreBag($contentBody->objects);
+
+        $objects = $contentBody->objects ?? [];
+
+        return $this->resourceFactory->createStoreBag($objects);
     }
 
     /**
@@ -151,7 +160,7 @@ class Api
      */
     public function getStore(int $storeId) : Store
     {
-        $response = $this->request("store/$storeId", $params);
+        $response = $this->request("store/$storeId");
         $contentBody = $response->getContentBody();
         return $this->resourceFactory->createStore($contentBody);
     }
@@ -172,8 +181,17 @@ class Api
         $params['format'] = 'json';
         $params = array_merge($defaults, $params);
 
-        $endpoint = "$this->endpoint/$endpoint";
+        $endpoint = rtrim($endpoint, '/');
+        $finalEndpoint = "$this->endpoint/$endpoint/";
         
-        return $this->client->get($endpoint, $params);
+        $response = $this->client->get($finalEndpoint, $params);
+
+        if ($response->isSuccess() === false) {
+            $statusCode = $response->getStatusCode();
+            $statusMessage = $response->getStatusMessage();
+            throw new RuntimeException("$statusCode: $statusMessage");
+        }
+        
+        return $response;
     }
 }
