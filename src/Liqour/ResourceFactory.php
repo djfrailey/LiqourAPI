@@ -99,8 +99,7 @@ class ResourceFactory
             $product->slug,
             $createdAt,
             $modifiedAt,
-            $product->resource_uri,
-            $this->api
+            $product->resource_uri
         );
         
         return $productDTO;
