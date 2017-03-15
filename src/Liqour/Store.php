@@ -4,7 +4,7 @@ namespace David\Liqour;
 use \DateTime;
 
 /**
- * Represents a store resource.
+ * Represents a Store resource.
  */
 class Store implements ResourceInterface
 {

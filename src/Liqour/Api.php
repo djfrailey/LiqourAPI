@@ -167,9 +167,10 @@ class Api
 
     /**
      * Internal method used to pipe requests to the http client.
-     * 
+     *
      * @param  string $endpoint
      * @param  array  $params
+     * @throws RuntimeException if the API request was not successful.
      * @return Response
      */
     private function request(string $endpoint, array $params = []) : Response

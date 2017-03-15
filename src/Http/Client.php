@@ -207,6 +207,10 @@ class Client
         }
     }
 
+    /**
+     * Used internally to notify the end user when an HTTP request has failed.
+     * @throws RuntimeException if the stream has failed.
+     */
     public function onStreamNotification(
         $notificationCode,
         $severity,

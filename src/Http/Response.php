@@ -11,6 +11,11 @@ use David\Bag\Bag;
  */
 class Response
 {
+
+    /**
+     * A map of status codes to messages.
+     * @var array
+     */
     private $statusMessageMap = [
         100 => "Continue",
         101 => "Switching Protocols",
