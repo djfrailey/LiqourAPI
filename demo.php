@@ -2,8 +2,8 @@
 
 require_once('autoload.php');
 
-use David\Liqour\Api;
-use David\Http\Client;
+use Djfrailey\Liqour\Api;
+use Djfrailey\Http\Client;
 
 $client = new Client();
 $api = new Api($client);

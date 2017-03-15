@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace David\Http;
+namespace Djfrailey\Http;
 
-use David\Bag\Bag;
+use Djfrailey\Bag\Bag;
 
 /**
  * A class to represent an HTTP response.

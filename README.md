@@ -9,8 +9,8 @@ This library provides programmatic access to the Oregon Liquor Prices API.
 ### Usage
 
 ```php
-use David\Http\Client;
-use David\Liqour\Api;
+use Djfrailey\Http\Client;
+use Djfrailey\Liqour\Api;
 
 $client = new Client();
 $api = new Api($client);

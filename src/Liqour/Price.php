@@ -1,6 +1,6 @@
 <?php
 
-namespace David\Liqour;
+namespace Djfrailey\Liqour;
 
 use \DateTime;
 

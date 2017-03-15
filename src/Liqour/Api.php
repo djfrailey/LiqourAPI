@@ -1,10 +1,10 @@
 <?php
 
-namespace David\Liqour;
+namespace Djfrailey\Liqour;
 
-use David\Http\Client;
-use David\Http\Response;
-use David\Bag\Bag;
+use Djfrailey\Http\Client;
+use Djfrailey\Http\Response;
+use Djfrailey\Bag\Bag;
 
 use \stdClass;
 use \DateTime;

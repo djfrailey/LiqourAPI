@@ -1,8 +1,8 @@
 <?php
 
-namespace David\Liqour;
+namespace Djfrailey\Liqour;
 
-use David\Bag\Bag;
+use Djfrailey\Bag\Bag;
 
 use \stdClass;
 use \DateTime;
