@@ -175,22 +175,50 @@ class Client
     {
         $url = $request->getUrlWithQuery();
         $context = $this->createStreamContext($request);
-        $handle = @fopen($url, 'r', false, $context);
-
-        if ($handle === false) {
-            throw new RuntimeException("Something bad happened while trying to request $url");
-        }
-
-        $meta = stream_get_meta_data($handle);
-        $contents = stream_get_contents($handle);
         
-        @fclose($handle);
+        try {
+        
+            $handle = @fopen($url, 'r', false, $context);
 
-        if ($contents === false) {
-            throw new RuntimeException("Something bad happened while reading request stream ($url)");
+            $meta = [];
+            $contents = "";
+
+            if ($handle) {
+                $meta = stream_get_meta_data($handle);
+                $contents = stream_get_contents($handle);
+                
+                @fclose($handle);
+            }
+
+            return $this->createResponseFromData($url, $meta, $contents);
+        
+        } catch (RuntimeException $ex) {
+            
+            return new Response(
+                $url,
+                $ex->getMessage(),
+                $ex->getCode(),
+                $this->getProtocolVersion(),
+                "",
+                "",
+                []
+            );
+        
         }
+    }
 
-        return $this->createResponse($url, $meta, $contents);
+    public function onStreamNotification(
+        $notificationCode,
+        $severity,
+        $message,
+        $messageCode,
+        $bytesTransferred,
+        $bytesMax
+    )
+    {
+        if ($notificationCode === STREAM_NOTIFY_FAILURE) {
+            throw new RuntimeException($message, $messageCode);
+        }
     }
 
     /**
@@ -216,9 +244,12 @@ class Client
             'ignore_errors' => $this->ignoreErrors,
         ];
 
-        $options = compact('http');
+        $notification = [$this, 'onStreamNotification'];
 
-        return stream_context_create($options);
+        $options = compact('http');
+        $params = compact('notification');
+
+        return stream_context_create($options, $params);
     }
 
     /**
@@ -249,7 +280,7 @@ class Client
      * @param  string $contentBody
      * @return Response
      */
-    private function createResponse(string $url, array $meta, string $contentBody) : Response
+    private function createResponseFromData(string $url, array $meta, string $contentBody) : Response
     {
         $parsedResponseMeta = $this->parseResponseMeta($meta);
         $parsedContentBody = $this->parseContentBody($contentBody, $parsedResponseMeta['contentType']);
