@@ -39,8 +39,8 @@ class Api
 
     public function __construct(Client $client)
     {
-        $this->client = $client;
-        $this->resourceFactory = new ResourceFactory();
+        $this->client          = $client;
+        $this->resourceFactory =  new ResourceFactory();
     }
 
     /**

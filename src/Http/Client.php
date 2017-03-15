@@ -231,17 +231,17 @@ class Client
         $formattedHeaders = $this->formatRequestHeaders($request);
 
         $http = [
-            'method' => $request->getMethod(),
-            'header' => $formattedHeaders,
-            'user_agent' => $this->userAgent,
-            'content' => $request->getContentBody(),
-            'proxy' => $this->proxyUri,
-            'request_fulluri' => $this->requestFullUri,
-            'follow_location' => $this->followLocation,
-            'max_redirects' => $this->maxRedirects,
+            'method'           => $request->getMethod(),
+            'header'           => $formattedHeaders,
+            'user_agent'       => $this->userAgent,
+            'content'          => $request->getContentBody(),
+            'proxy'            => $this->proxyUri,
+            'request_fulluri'  => $this->requestFullUri,
+            'follow_location'  => $this->followLocation,
+            'max_redirects'    => $this->maxRedirects,
             'protocol_version' => $this->protocolVersion,
-            'timeout' => $this->timeout,
-            'ignore_errors' => $this->ignoreErrors,
+            'timeout'          => $this->timeout,
+            'ignore_errors'    => $this->ignoreErrors,
         ];
 
         $notification = [$this, 'onStreamNotification'];

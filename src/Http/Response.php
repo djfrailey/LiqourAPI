@@ -144,13 +144,13 @@ class Response
         array $headers
     ) {
     
-        $this->uri = $uri;
-        $this->contentBody = $contentBody;
-        $this->statusCode = $statusCode;
+        $this->uri             = $uri;
+        $this->contentBody     = $contentBody;
+        $this->statusCode      = $statusCode;
         $this->protocolVersion = $protocolVersion;
-        $this->charset = $charset;
-        $this->contentType = $contentType;
-        $this->headers = new Bag($headers);
+        $this->charset         = $charset;
+        $this->contentType     = $contentType;
+        $this->headers         = new Bag($headers);
     }
 
     public function setUri(string $uri) : Response

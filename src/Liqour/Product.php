@@ -25,34 +25,34 @@ class Product implements ResourceInterface
     private $uri;
 
     public function __construct(
-        int $id = 0,
-        string $title = "",
-        float $age = 0,
-        int $bottlesPerCase = 0,
-        string $description = "",
-        bool $onSale = false,
-        float $proof = 0,
-        string $size = "",
-        string $code = "",
-        string $slug = "",
-        DateTime $createdAt = null,
+        int $id              = 0,
+        string $title        = "",
+        float $age           = 0,
+        int $bottlesPerCase  = 0,
+        string $description  = "",
+        bool $onSale         = false,
+        float $proof         = 0,
+        string $size         = "",
+        string $code         = "",
+        string $slug         = "",
+        DateTime $createdAt  = null,
         DateTime $modifiedAt = null,
-        string $uri = ""
+        string $uri          = ""
     ) {
     
-        $this->id = $id;
-        $this->title = $title;
-        $this->age = $age;
+        $this->id             = $id;
+        $this->title          = $title;
+        $this->age            = $age;
         $this->bottlesPerCase = $bottlesPerCase;
-        $this->description = $description;
-        $this->onSale = $onSale;
-        $this->proof = $proof;
-        $this->size = $size;
-        $this->code = $code;
-        $this->slug = $slug;
-        $this->createdAt = $createdAt;
-        $this->modifiedAt = $modifiedAt;
-        $this->uri = $uri;
+        $this->description    = $description;
+        $this->onSale         = $onSale;
+        $this->proof          = $proof;
+        $this->size           = $size;
+        $this->code           = $code;
+        $this->slug           = $slug;
+        $this->createdAt      = $createdAt;
+        $this->modifiedAt     = $modifiedAt;
+        $this->uri            = $uri;
     }
 
     public function getId() : int

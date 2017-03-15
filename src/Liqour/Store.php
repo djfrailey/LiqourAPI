@@ -22,30 +22,30 @@ class Store implements ResourceInterface
     private $uri;
 
     public function __construct(
-        int $id = 0,
-        int $key = 0,
-        string $name = "",
-        string $address = "",
-        string $rawAddress = "",
+        int $id             = 0,
+        int $key            = 0,
+        string $name        = "",
+        string $address     = "",
+        string $rawAddress  = "",
         string $phoneNumber = "",
-        string $county = "",
-        string $rawHours = "",
-        float $latitude = 0,
-        float $longitude = 0,
-        string $uri = ""
+        string $county      = "",
+        string $rawHours    = "",
+        float $latitude     = 0,
+        float $longitude    = 0,
+        string $uri         = ""
     ) {
     
-        $this->id = $id;
-        $this->key = $key;
-        $this->name = $name;
-        $this->address = $address;
-        $this->rawAddress = $rawAddress;
+        $this->id          = $id;
+        $this->key         = $key;
+        $this->name        = $name;
+        $this->address     = $address;
+        $this->rawAddress  = $rawAddress;
         $this->phoneNumber = $phoneNumber;
-        $this->county = $county;
-        $this->rawHours = $rawHours;
-        $this->latitude = $latitude;
-        $this->longitude = $longitude;
-        $this->uri = $uri;
+        $this->county      = $county;
+        $this->rawHours    = $rawHours;
+        $this->latitude    = $latitude;
+        $this->longitude   = $longitude;
+        $this->uri         = $uri;
     }
 
     public function getId() : int

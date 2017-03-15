@@ -17,20 +17,20 @@ class Price implements ResourceInterface
     private $uri;
 
     public function __construct(
-        int $id = 0,
-        float $amount = 0,
-        DateTime $createdAt = null,
+        int $id              = 0,
+        float $amount        = 0,
+        DateTime $createdAt  = null,
         DateTime $modifiedAt = null,
-        string $productUri = "",
-        string $uri = ""
+        string $productUri   = "",
+        string $uri          = ""
     ) {
     
-        $this->id = $id;
-        $this->amount = $amount;
-        $this->createdAt = $createdAt;
+        $this->id         = $id;
+        $this->amount     = $amount;
+        $this->createdAt  = $createdAt;
         $this->modifiedAt = $modifiedAt;
         $this->productUri = $productUri;
-        $this->uri = $uri;
+        $this->uri        = $uri;
     }
 
     public function getId() : int
