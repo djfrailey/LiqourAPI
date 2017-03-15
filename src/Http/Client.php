@@ -177,7 +177,6 @@ class Client
         $context = $this->createStreamContext($request);
         
         try {
-        
             $handle = @fopen($url, 'r', false, $context);
 
             $meta = [];
@@ -191,9 +190,7 @@ class Client
             }
 
             return $this->createResponseFromData($url, $meta, $contents);
-        
         } catch (RuntimeException $ex) {
-            
             return new Response(
                 $url,
                 $ex->getMessage(),
@@ -203,7 +200,6 @@ class Client
                 "",
                 []
             );
-        
         }
     }
 
@@ -218,8 +214,8 @@ class Client
         $messageCode,
         $bytesTransferred,
         $bytesMax
-    )
-    {
+    ) {
+    
         if ($notificationCode === STREAM_NOTIFY_FAILURE) {
             throw new RuntimeException($message, $messageCode);
         }
@@ -266,7 +262,7 @@ class Client
         $formattedHeaders = [];
         $headers = $request->getHeaders()->toGenerator();
 
-        foreach($headers as $header => $value) {
+        foreach ($headers as $header => $value) {
             if (is_numeric($header)) {
                 $formattedHeaders[] = $value;
             } else {
@@ -343,7 +339,7 @@ class Client
 
     /**
      * JSON Decodes the content body if the content type is application/json
-     * 
+     *
      * @param  string $contentBody
      * @param  string $contentType
      * @return mixed
@@ -367,8 +363,8 @@ class Client
      *
      * The first index of the tuple will be the parsed protocol or 0.
      * The second index of the tuple will be the parsed status code or 0.
-     * 
-     * @param  string $protocolAndCode 
+     *
+     * @param  string $protocolAndCode
      * @return array
      */
     private function parseProtocolAndCode(string $protocolAndCode) : array
@@ -397,7 +393,7 @@ class Client
     {
         $parsedHeaders = [];
 
-        foreach($headers as $rawHeader) {
+        foreach ($headers as $rawHeader) {
             $firstColon = strpos($rawHeader, ':');
             $header = substr($rawHeader, 0, $firstColon);
             $value = substr($rawHeader, $firstColon + 1);
@@ -416,7 +412,7 @@ class Client
      *
      * The first index in the tuple will be the parsed content type or empty string.
      * The second index in the tuple will be the parsed character set or empty string.
-     * 
+     *
      * @param  string $rawContentType
      * @return array
      */

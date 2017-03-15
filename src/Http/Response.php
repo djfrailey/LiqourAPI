@@ -142,8 +142,8 @@ class Response
         string $charset,
         string $contentType,
         array $headers
-    )
-    {
+    ) {
+    
         $this->uri = $uri;
         $this->contentBody = $contentBody;
         $this->statusCode = $statusCode;

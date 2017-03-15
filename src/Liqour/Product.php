@@ -38,8 +38,8 @@ class Product implements ResourceInterface
         DateTime $createdAt = null,
         DateTime $modifiedAt = null,
         string $uri = ""
-    )
-    {
+    ) {
+    
         $this->id = $id;
         $this->title = $title;
         $this->age = $age;

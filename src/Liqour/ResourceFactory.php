@@ -16,7 +16,7 @@ class ResourceFactory
     {
         $priceBag = new Bag();
         
-        foreach($prices as $rawPrice) {
+        foreach ($prices as $rawPrice) {
             $price = $this->createPrice($rawPrice);
             $priceBag->set((string) $price->getId(), $price);
         }
@@ -43,8 +43,7 @@ class ResourceFactory
     {
         $storeBag = new Bag();
 
-        foreach($stores as $rawStore)
-        {
+        foreach ($stores as $rawStore) {
             $store = $this->createStore($rawStore);
             $storeBag->set($store->getId(), $store);
         }
@@ -73,7 +72,7 @@ class ResourceFactory
     {
         $productBag = new Bag();
 
-        foreach($products as $rawProduct) {
+        foreach ($products as $rawProduct) {
             $product = $this->createProduct($rawProduct);
             $productBag->set($product->getId(), $product);
         }

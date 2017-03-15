@@ -1,6 +1,7 @@
 <?php
 
 namespace David\Liqour;
+
 use \DateTime;
 
 /**
@@ -32,8 +33,8 @@ class Store implements ResourceInterface
         float $latitude = 0,
         float $longitude = 0,
         string $uri = ""
-    )
-    {
+    ) {
+    
         $this->id = $id;
         $this->key = $key;
         $this->name = $name;

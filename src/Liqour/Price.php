@@ -23,8 +23,8 @@ class Price implements ResourceInterface
         DateTime $modifiedAt = null,
         string $productUri = "",
         string $uri = ""
-    )
-    {
+    ) {
+    
         $this->id = $id;
         $this->amount = $amount;
         $this->createdAt = $createdAt;

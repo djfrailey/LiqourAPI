@@ -50,7 +50,7 @@ class Api
      *     limit - Number of results to return in a request
      *     offset - Number of records to skip
      *     product - ID of the product to retrieve prices for
-     * 
+     *
      * @param  array  $params Get parameters to pass with the request.
      * @return Bag
      */
@@ -66,7 +66,7 @@ class Api
 
     /**
      * Get a price by ID.
-     * 
+     *
      * @param  int    $priceId
      * @return Price
      */
@@ -87,7 +87,7 @@ class Api
      *     size - Filters products by bottle size.
      *     proof - Filters products by proof.
      *     on_sale - Filters products by sale status.
-     *     
+     *
      * @param  array  $params
      * @return Bag
      */
@@ -103,7 +103,7 @@ class Api
 
     /**
      * Get product by ID.
-     * @param  int    $productId 
+     * @param  int    $productId
      * @return Product
      */
     public function getProduct(int $productId) : Product
@@ -136,8 +136,8 @@ class Api
      *
      * Valid parameters include:
      *     limit - Number of results to return in a request
-     *     offset - Number of records to skip    
-     * 
+     *     offset - Number of records to skip
+     *
      * @param  array  $params
      * @return Bag
      */
@@ -153,9 +153,9 @@ class Api
 
     /**
      * Get a store by ID
-     * 
+     *
      * @param  int    $storeId
-     * @param  array  $params 
+     * @param  array  $params
      * @return Store
      */
     public function getStore(int $storeId) : Store
