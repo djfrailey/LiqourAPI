@@ -306,11 +306,11 @@ class Client
     private function parseResponseMeta(array $responseMeta) : array
     {
         $parsedResponseMeta = [
-            'headers' => [],
-            'protocol' => 0,
-            'code' => 0,
+            'headers'     => [],
+            'protocol'    => 0,
+            'code'        => 0,
             'contentType' => "",
-            'charset' => ""
+            'charset'     => ""
         ];
 
         if (isset($responseMeta['wrapper_data']) === true) {
@@ -327,11 +327,11 @@ class Client
             list($protocol, $code) = $this->parseProtocolAndCode($protocolAndCode);
             list($contentType, $charset) = $this->parseContentType($rawContentType);
             
-            $parsedResponseMeta['headers'] = $headers;
-            $parsedResponseMeta['protocol'] = $protocol;
-            $parsedResponseMeta['code'] = $code;
+            $parsedResponseMeta['headers']     = $headers;
+            $parsedResponseMeta['protocol']    = $protocol;
+            $parsedResponseMeta['code']        = $code;
             $parsedResponseMeta['contentType'] = $contentType;
-            $parsedResponseMeta['charset'] = $charset;
+            $parsedResponseMeta['charset']     = $charset;
         }
 
         return $parsedResponseMeta;
