@@ -17,12 +17,12 @@ class Price implements ResourceInterface
     private $uri;
 
     public function __construct(
-        int $id,
-        float $amount,
-        DateTime $createdAt,
-        DateTime $modifiedAt,
-        string $productUri,
-        string $uri
+        int $id = 0,
+        float $amount = 0,
+        DateTime $createdAt = null,
+        DateTime $modifiedAt = null,
+        string $productUri = "",
+        string $uri = ""
     )
     {
         $this->id = $id;
@@ -43,12 +43,12 @@ class Price implements ResourceInterface
         return $this->amount;
     }
 
-    public function getCreatedAt() : DateTime
+    public function getCreatedAt()
     {
         return $this->createdAt;
     }
 
-    public function getModifiedAt() : DateTime
+    public function getModifiedAt()
     {
         return $this->modifiedAt;
     }

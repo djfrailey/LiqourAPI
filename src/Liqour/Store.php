@@ -21,17 +21,17 @@ class Store implements ResourceInterface
     private $uri;
 
     public function __construct(
-        int $id,
-        int $key,
-        string $name,
-        string $address,
-        string $rawAddress,
-        string $phoneNumber,
-        string $county,
-        string $rawHours,
-        float $latitude,
-        float $longitude,
-        string $uri
+        int $id = 0,
+        int $key = 0,
+        string $name = "",
+        string $address = "",
+        string $rawAddress = "",
+        string $phoneNumber = "",
+        string $county = "",
+        string $rawHours = "",
+        float $latitude = 0,
+        float $longitude = 0,
+        string $uri = ""
     )
     {
         $this->id = $id;

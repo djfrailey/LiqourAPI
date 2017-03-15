@@ -23,22 +23,21 @@ class Product implements ResourceInterface
     private $createdAt;
     private $modifiedAt;
     private $uri;
-    private $prices;
 
     public function __construct(
-        int $id,
-        string $title,
-        float $age,
-        int $bottlesPerCase,
-        string $description,
-        bool $onSale,
-        float $proof,
-        string $size,
-        string $code,
-        string $slug,
-        DateTime $createdAt,
-        DateTime $modifiedAt,
-        string $uri
+        int $id = 0,
+        string $title = "",
+        float $age = 0,
+        int $bottlesPerCase = 0,
+        string $description = "",
+        bool $onSale = false,
+        float $proof = 0,
+        string $size = "",
+        string $code = "",
+        string $slug = "",
+        DateTime $createdAt = null,
+        DateTime $modifiedAt = null,
+        string $uri = ""
     )
     {
         $this->id = $id;
@@ -54,7 +53,6 @@ class Product implements ResourceInterface
         $this->createdAt = $createdAt;
         $this->modifiedAt = $modifiedAt;
         $this->uri = $uri;
-        $this->prices = new Bag();
     }
 
     public function getId() : int
@@ -107,12 +105,12 @@ class Product implements ResourceInterface
         return $this->slug;
     }
 
-    public function getCreatedAt() : DateTime
+    public function getCreatedAt()
     {
         return $this->createdAt;
     }
 
-    public function getModifiedat() : DateTime
+    public function getModifiedAt()
     {
         return $this->modifiedAt;
     }
