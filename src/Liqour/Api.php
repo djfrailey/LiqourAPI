@@ -40,7 +40,6 @@ class Api
     {
         $this->client = $client;
         $this->resourceFactory = new ResourceFactory();
-
         $this->client->setFollowLocation(1);
     }
 
@@ -123,7 +122,7 @@ class Api
             $id = $productOrId->getId();
         }
 
-        return $this->api->getPrices(['product' => $id]);
+        return $this->getPrices(['product' => $id]);
     }
 
     /**

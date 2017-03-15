@@ -38,7 +38,7 @@ class Product implements ResourceInterface
         string $slug,
         DateTime $createdAt,
         DateTime $modifiedAt,
-        string $uri,
+        string $uri
     )
     {
         $this->id = $id;
