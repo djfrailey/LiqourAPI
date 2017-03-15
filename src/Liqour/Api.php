@@ -8,6 +8,7 @@ use David\Bag\Bag;
 
 use \stdClass;
 use \DateTime;
+use \InvalidArgumentException;
 
 /**
  * Class representation of the Oregon Liquor Prices API.
@@ -38,7 +39,7 @@ class Api
     public function __construct(Client $client)
     {
         $this->client = $client;
-        $this->resourceFactory = new ResourceFactory($this);
+        $this->resourceFactory = new ResourceFactory();
 
         $this->client->setFollowLocation(1);
     }
@@ -105,6 +106,24 @@ class Api
         $response = $this->request("product/$productId");
         $contentBody = $response->getContentBody();
         return $this->resourceFactory->createProduct($contentBody);
+    }
+
+    public function getProductPrices($productOrId) : Bag
+    {
+        $isInteger = is_integer($productId);
+        $isProduct = $productOrId instanceof Product;
+
+        if ($isInteger === false && $isProduct === false) {
+            throw new InvalidArgumentException("Argument must be an integer or an instance of a Product");
+        }
+
+        $id = $productOrId;
+
+        if ($isProduct === true) {
+            $id = $productOrId->getId();
+        }
+
+        return $this->api->getPrices(['product' => $id]);
     }
 
     /**

@@ -24,7 +24,6 @@ class Product implements ResourceInterface
     private $modifiedAt;
     private $uri;
     private $prices;
-    private $api;
 
     public function __construct(
         int $id,
@@ -40,7 +39,6 @@ class Product implements ResourceInterface
         DateTime $createdAt,
         DateTime $modifiedAt,
         string $uri,
-        Api $api
     )
     {
         $this->id = $id;
@@ -56,7 +54,6 @@ class Product implements ResourceInterface
         $this->createdAt = $createdAt;
         $this->modifiedAt = $modifiedAt;
         $this->uri = $uri;
-        $this->api = $api;
         $this->prices = new Bag();
     }
 
@@ -123,14 +120,5 @@ class Product implements ResourceInterface
     public function getUri() : string
     {
         return $this->uri;
-    }
-
-    /**
-     * Retreives the prices for this product
-     * @return Bag
-     */
-    public function getPrices() : Bag
-    {
-        return $this->api->getPrices(['product' => $this->id]);
     }
 }

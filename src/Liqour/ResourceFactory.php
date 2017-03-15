@@ -12,13 +12,6 @@ use \DateTime;
  */
 class ResourceFactory
 {
-    private $api;
-
-    public function __construct(Api $api)
-    {
-        $this->api = $api;
-    }
-
     public function createPriceBag(array $prices) : Bag
     {
         $priceBag = new Bag();
